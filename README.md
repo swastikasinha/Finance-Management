@@ -16,4 +16,3 @@
 - [ ] 4. User inputs either expense or income
 - [ ] 5. User input category
 - [ ] 6. User input new accounts
-- [ ] 7. 
