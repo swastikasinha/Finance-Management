@@ -10,7 +10,7 @@
 - [ ] 8. Accounts
 
 ## Functionalities:-
-- [ ] 1. User authentication
+- [x] 1. User authentication
 - [ ] 2. Budget calculation
 - [ ] 3. Analysis (Pie chart, Monthly expense, Yearly expense as well as income, Expense flow, Income flow, Account analysis)
 - [ ] 4. User inputs either expense or income
