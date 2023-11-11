@@ -12,6 +12,31 @@ def create_connection():
     )
     return connection
 
+def create_user_table():
+    connection = create_connection()
+    cursor = connection.cursor()
+
+    query = """
+    CREATE TABLE IF NOT EXISTS users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        username VARCHAR(255) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        age INT NOT NULL,
+        profession VARCHAR(255),
+        income INT,
+        mobile VARCHAR(15),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    """
+
+    cursor.execute(query)
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+
 def if_user_exists(username,email):
     connection = create_connection()
     cursor = connection.cursor()
@@ -39,7 +64,7 @@ def insert_user(name, email, username, password, age, profession, income, mobile
 
 def sign_up():
     st.title("Sign Up")
-
+    st.write("Have an account! Head to the sign in page!! 🙋‍♂️")
     with st.form("signup_form"):
         name = st.text_input("Full Name:")
         email = st.text_input("Email:")
@@ -65,7 +90,7 @@ def sign_up():
 def authenticate_user(username,password):
     connection = create_connection()
     cursor = connection.cursor()
-    query = "SELECT * FROM users WHERE username = %s"
+    query = "SELECT password FROM users WHERE username = %s"
     cursor.execute(query, (username,))
 
     user_data = cursor.fetchone()
@@ -74,7 +99,7 @@ def authenticate_user(username,password):
     connection.close()
 
     if user_data:
-        stored_password = user_data[3]
+        stored_password = user_data[0].encode('utf-8')
         if bcrypt.checkpw(password.encode('utf-8'), stored_password):
             return user_data
     return None
