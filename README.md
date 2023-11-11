@@ -1,7 +1,7 @@
 # Finance-Management
 ## Tables:-
 - [x] 1. User
-- [x] 2. Budget
+- [ ] 2. Budget
 - [ ] 3. Expenses
 - [ ] 4. Categories
 - [ ] 5. Analysis
