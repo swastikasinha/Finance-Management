@@ -1,8 +1,9 @@
-from user_authentication import *
+from functions import *
 
 create_user_table()
+create_expense_table()
 
-menu = ['Home', 'Sign Up','Sign In']
+menu = ['Home', 'Sign Up','Sign In','Expense']
 
 
 tab = st.tabs(menu)
@@ -26,3 +27,6 @@ with tab[1]:
 
 with tab[2]:
     sign_in()
+
+with tab[3]:
+    expense()
