@@ -2,8 +2,9 @@ from functions import *
 
 create_user_table()
 create_expense_table()
+create_income_table()
 
-menu = ['Home', 'Sign Up','Sign In','Expense']
+menu = ['Home', 'Sign Up','Sign In','Expense','Income']
 
 
 tab = st.tabs(menu)
@@ -30,3 +31,6 @@ with tab[2]:
 
 with tab[3]:
     expense()
+
+with tab[4]:
+    income()

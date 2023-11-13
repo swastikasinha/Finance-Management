@@ -3,6 +3,7 @@ import streamlit as st
 import bcrypt
 from expense import *
 from user_authentication import *
+from income import *
 
 user_id = None
 
@@ -67,3 +68,18 @@ def expense():
         else:
             insert_expense(user_id,expense_category,expense_amount)
             st.success("Expense added successfully")
+
+def income():
+    st.title("Income Management")
+
+    with st.form("income_form"):
+        income_category = st.text_input("Income Category:")
+        income_amount = st.number_input("Income Amount:",min_value=0.0)
+        income_submit_button = st.form_submit_button("Add Income")
+
+    if income_submit_button:
+        if not income_category or income_amount<=0:
+            st.warning("Please enter all the details")
+        else:
+            insert_income(user_id,income_category,income_amount)
+            st.success("Income added successfully")
