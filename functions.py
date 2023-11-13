@@ -1,9 +1,8 @@
-import mysql.connector
-import streamlit as st
-import bcrypt
 from expense import *
 from user_authentication import *
 from income import *
+from analysis import *
+import altair as alt
 
 user_id = None
 
@@ -83,3 +82,46 @@ def income():
         else:
             insert_income(user_id,income_category,income_amount)
             st.success("Income added successfully")
+
+def analysis():
+    st.title("Expense Analysis")
+
+    expense_month = st.number_input("Expense Month:", min_value=1, max_value=12)
+    expense_year = st.number_input("Expense Year", min_value=2000)
+    expense_analysis_submit = st.button("Generate Expense Pie Chart")
+
+    st.title("Income Analysis")
+
+    income_month = st.number_input("Income Month:", min_value=1, max_value=12)
+    income_year = st.number_input("Income Year", min_value=2000)
+    income_analysis_submit = st.button("Generate Income Pie Chart")
+
+    if expense_analysis_submit and expense_month >= 1 and expense_year >= 2000:
+        expense_data = get_expenses_by_month(user_id, expense_month, expense_year)
+
+        if not expense_data:
+            st.warning("No expenses found for the specified expense month and year.")
+        else:
+            df_expenses = pd.DataFrame(expense_data, columns=['Category', 'Amount'])
+            chart = alt.Chart(df_expenses).mark_arc().encode(
+                alt.Color('Category:N'),
+                alt.Text('Amount:Q', format='.2f')
+            ).properties(width=400, height=400)
+            st.altair_chart(chart)
+
+    if income_analysis_submit and income_month >= 1 and income_year >= 2000:
+        income_data = get_income_by_month(user_id, income_month, income_year)
+
+        if not income_data:
+            st.warning("No income found for the specified income month and year.")
+        else:
+            df_income = pd.DataFrame(income_data, columns=['Category', 'Amount'])
+            chart = alt.Chart(df_income).mark_arc().encode(
+                alt.Color('Category:N'),
+                alt.Text('Amount:Q', format='.2f')
+            ).properties(width=400, height=400)
+            st.altair_chart(chart)
+
+    if (expense_analysis_submit and (expense_month < 1 or expense_year < 2000)) or \
+            (income_analysis_submit and (income_month < 1 or income_year < 2000)):
+        st.warning("Please enter valid expense or income month and year values.")

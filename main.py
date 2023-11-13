@@ -4,7 +4,7 @@ create_user_table()
 create_expense_table()
 create_income_table()
 
-menu = ['Home', 'Sign Up','Sign In','Expense','Income']
+menu = ['Home', 'Sign Up','Sign In','Expense','Income','Analysis']
 
 
 tab = st.tabs(menu)
@@ -34,3 +34,6 @@ with tab[3]:
 
 with tab[4]:
     income()
+
+with tab[5]:
+    analysis()
