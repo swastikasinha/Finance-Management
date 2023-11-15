@@ -9,7 +9,7 @@ create_category_table()
 default_categories_insertion()
 create_budget_table()
 
-menu = ['Home', 'Sign Up','Sign In','Budget', 'Expense','Income','Category','Analysis']
+menu = ['Home', 'Sign Up','Sign In','Budget', 'Expense','Income','Category','Analysis','History']
 
 
 tab = st.tabs(menu)
@@ -49,3 +49,6 @@ with tab[6]:
 
 with tab[7]:
     analysis()
+
+with tab[8]:
+    history()
