@@ -11,18 +11,20 @@ create_budget_table()
 
 menu = ['Home', 'Sign Up','Sign In','Budget', 'Expense','Income','Category','Analysis', 'History']
 
-
 tab = st.tabs(menu)
 
 with tab[0]:
-    st.title("# Welcome to Finance Management App! 👋")
+    st.title("Welcome to Finance Management App! 👋")
     st.markdown(
         """
         <div>
-            <div>
-                <h2>Keep track of your expenses!!</h1>
-                <h2>All in one app!!<h2>
-            </div>
+            <ul>
+                <li>Keep track of your expenses with this all-in-one app!</li>
+                <li>Sign up and sign in to start managing your finances.</li>
+                <li>Set your monthly budget and track your expenses and income.</li>
+                <li>Analyze your spending with visual charts and graphs.</li>
+                <li>View your transaction history and manage categories.</li>
+            </ul>
         </div>
         """,
         unsafe_allow_html=True
