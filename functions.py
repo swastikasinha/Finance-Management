@@ -348,42 +348,47 @@ def set_budget():
 def history():
     hist(user_id)
 
+
 def show_saving():
-    st.title("Saving Overview")
+    st.title("Saving Overview for the current month")
 
-    # Get user input for month and year
-    selected_month = st.number_input("Enter the month (1-12):", min_value=1, max_value=12, value=datetime.now().month)
-    selected_year = st.number_input("Enter the year:", min_value=2000, max_value=datetime.now().year, value=datetime.now().year)
+    # Get the current month and year
+    current_month = datetime.now().month
+    current_year = datetime.now().year
 
-    # Execute the nested SQL query to calculate total income, total expenses, and savings
-    query = f"""
-        SELECT
-            COALESCE(SUM(income.amount), 0) AS total_income,
-            COALESCE(SUM(expenses.amount), 0) AS total_expenses
-        FROM
-            (SELECT amount FROM income
-             WHERE userID = {user_id} AND MONTH(created_at) = {selected_month} AND YEAR(created_at) = {selected_year}) AS income,
-            (SELECT amount FROM expenses
-             WHERE userID = {user_id} AND MONTH(created_at) = {selected_month} AND YEAR(created_at) = {selected_year}) AS expenses
-    """
+    # Get total income and total expenses for the current month and year
+    total_income, total_expenses = get_total_income_and_expenses(user_id, current_month, current_year)
 
+    # Calculate savings or losses
+    savings = total_income - total_expenses
+
+    st.write(f"Total Income: Rs. {total_income}")
+    st.write(f"Total Expenses: Rs. {total_expenses}")
+    st.write(f"Savings: Rs. {savings}")
+
+def get_total_income_and_expenses(user_id, month, year):
     connection = create_connection()
     cursor = connection.cursor()
 
     try:
-        cursor.execute(query)
-        result = cursor.fetchone()
-        total_income = result[0]
-        total_expenses = result[1]
+        # Query to get total income for the specified user, month, and year
+        total_income_query = """
+            SELECT SUM(amount) FROM income
+            WHERE userID = %s AND MONTH(created_at) = %s AND YEAR(created_at) = %s
+        """
+        cursor.execute(total_income_query, (user_id, month, year))
+        total_income = cursor.fetchone()[0] or 0
 
-        # Calculate savings or losses
-        savings = total_income - total_expenses
-
-        st.write(f"Total Income: Rs. {total_income}")
-        st.write(f"Total Expenses: Rs. {total_expenses}")
-        st.write(f"Savings: Rs. {savings}")
+        # Query to get total expenses for the specified user, month, and year
+        total_expenses_query = """
+            SELECT SUM(amount) FROM expenses
+            WHERE userID = %s AND MONTH(created_at) = %s AND YEAR(created_at) = %s
+        """
+        cursor.execute(total_expenses_query, (user_id, month, year))
+        total_expenses = cursor.fetchone()[0] or 0
 
     finally:
         cursor.close()
         connection.close()
 
+    return total_income, total_expenses
