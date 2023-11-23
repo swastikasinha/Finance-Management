@@ -10,6 +10,7 @@ import streamlit as st
 from budget_calculation import *
 from datetime import datetime
 import matplotlib.pyplot as plt
+import calendar as cd
 
 user_id = None
 
@@ -85,6 +86,9 @@ def expense():
             st.warning("Please enter all the details")
         else:
             insert_expense(user_id,expense_category,expense_amount)
+            budget_exceeded,total_expense,budget_amount = check_budget_exceeded(user_id,expense_category)
+            if budget_exceeded:
+                st.warning(f"Total expense for {expense_category} exceeds the budget set as {budget_amount} whereas the expenses amount to {total_expense}")
             st.success("Expense added successfully")
 
 def income():
@@ -344,4 +348,42 @@ def set_budget():
 def history():
     hist(user_id)
 
+def show_saving():
+    st.title("Saving Overview")
+
+    # Get user input for month and year
+    selected_month = st.number_input("Enter the month (1-12):", min_value=1, max_value=12, value=datetime.now().month)
+    selected_year = st.number_input("Enter the year:", min_value=2000, max_value=datetime.now().year, value=datetime.now().year)
+
+    # Execute the nested SQL query to calculate total income, total expenses, and savings
+    query = f"""
+        SELECT
+            COALESCE(SUM(income.amount), 0) AS total_income,
+            COALESCE(SUM(expenses.amount), 0) AS total_expenses
+        FROM
+            (SELECT amount FROM income
+             WHERE userID = {user_id} AND MONTH(created_at) = {selected_month} AND YEAR(created_at) = {selected_year}) AS income,
+            (SELECT amount FROM expenses
+             WHERE userID = {user_id} AND MONTH(created_at) = {selected_month} AND YEAR(created_at) = {selected_year}) AS expenses
+    """
+
+    connection = create_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute(query)
+        result = cursor.fetchone()
+        total_income = result[0]
+        total_expenses = result[1]
+
+        # Calculate savings or losses
+        savings = total_income - total_expenses
+
+        st.write(f"Total Income: Rs. {total_income}")
+        st.write(f"Total Expenses: Rs. {total_expenses}")
+        st.write(f"Savings: Rs. {savings}")
+
+    finally:
+        cursor.close()
+        connection.close()
 

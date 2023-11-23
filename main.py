@@ -9,7 +9,7 @@ create_category_table()
 default_categories_insertion()
 create_budget_table()
 
-menu = ['Home', 'Sign Up','Sign In','Budget', 'Expense','Income','Category','Analysis', 'History']
+menu = ['Home', 'Sign Up','Sign In','Budget', 'Expense','Income','Category','Analysis', 'History','Savings']
 
 tab = st.tabs(menu)
 
@@ -84,3 +84,11 @@ with tab[8]:
         st.write("Signed Out")
     else:
         history()
+
+with tab[9]:
+    if "shared" not in st.session_state:
+        st.write("Not Signed In yet")
+    elif st.session_state["shared"]==False:
+        st.write("Signed Out")
+    else:
+        show_saving()
