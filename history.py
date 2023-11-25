@@ -37,3 +37,16 @@ def hist(user_id):
     else:
         df_history = pd.DataFrame(result, columns=['Transaction Type', 'Category', 'Amount', 'Transaction Date'])
         st.dataframe(df_history)
+
+# SELECT * FROM (
+#     SELECT 'Expense' AS transaction_type, expenseCategory AS category_name, amount, created_at
+#     FROM expenses 
+#     WHERE userID = %s
+
+#     UNION ALL
+
+#     SELECT 'Income' AS transaction_type, incomeCategory AS category_name, amount, created_at
+#     FROM income
+#     WHERE userID = %s
+# ) AS nested_query
+# ORDER BY created_at DESC;
